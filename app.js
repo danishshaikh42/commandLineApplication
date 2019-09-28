@@ -29,9 +29,13 @@ const definitions = (word) => {
 
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
-
-        console.log(body);
-        body.for
+        let results = JSON.parse(body);
+        let definitionCount = 1;
+        console.log("The Definition/Definitions of the word are as below :")
+        results.forEach(function (def) {
+            console.log(definitionCount + ' : ' + def.text)
+            definitionCount++;
+        });
     });
 
 }
