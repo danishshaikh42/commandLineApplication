@@ -10,12 +10,20 @@ program
     .command('definitions <word>')
     .description('Shows the definition of a word')
     .action((word) => {
-        definitions(word);
+        definitionsOfTheWord(word);
     });
 
 
 
-const definitions = (word) => {
+program
+    .command('synonymns <word>')
+    .description('Shows the synonymns of a word')
+    .action((word) => {
+        synonymsOfTheWord(word);
+    });
+
+//Function to get the definitions of the particular word
+const definitionsOfTheWord = (word) => {
     var options = {
         method: 'GET',
         url: 'https://fourtytwowords.herokuapp.com/word/' + word + '/definitions',
@@ -32,10 +40,38 @@ const definitions = (word) => {
         let results = JSON.parse(body);
         let definitionCount = 1;
         console.log("The Definition/Definitions of the word are as below :")
-        results.forEach(function (def) {
-            console.log(definitionCount + ' : ' + def.text)
+        results.forEach(function (definition) {
+            console.log(definitionCount + ' : ' + definition.text)
             definitionCount++;
         });
+    });
+
+}
+
+
+//Function to get the Synonym of a particular word
+const synonymsOfTheWord = (word) => {
+    var options = {
+        method: 'GET',
+        url: 'https://fourtytwowords.herokuapp.com/word/' + word + '/relatedWords',
+        qs: { api_key: apiKey },
+        headers:
+        {
+            'Postman-Token': 'e743cbc4-f39a-e307-e91a-c62b650f7432',
+            'Cache-Control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        let synonyms = JSON.parse(body);
+        let synonymCount = 1;
+
+        console.log("The Synonym/Synonyms of the word are as below :")
+        synonyms[0].words.forEach(function (synonym) {
+            console.log(synonymCount + ':' + synonym);
+            synonymCount++;
+        })
     });
 
 }
