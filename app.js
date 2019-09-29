@@ -22,6 +22,14 @@ program
         synonymsOfTheWord(word);
     });
 
+program
+    .command('examples <word>')
+    .description('Shows the examples of a word')
+    .action((word) => {
+        examplesOfTheWord(word);
+    });
+
+
 //Function to get the definitions of the particular word
 const definitionsOfTheWord = (word) => {
     var options = {
@@ -39,9 +47,9 @@ const definitionsOfTheWord = (word) => {
         if (error) throw new Error(error);
         let results = JSON.parse(body);
         let definitionCount = 1;
-        console.log("The Definition/Definitions of the word are as below :")
+        console.log("The Definition/Definitions of the word are as below : \n")
         results.forEach(function (definition) {
-            console.log(definitionCount + ' : ' + definition.text)
+            console.log(definitionCount + ' -> ' + definition.text + '\n')
             definitionCount++;
         });
     });
@@ -67,15 +75,42 @@ const synonymsOfTheWord = (word) => {
         let synonyms = JSON.parse(body);
         let synonymCount = 1;
 
-        console.log("The Synonym/Synonyms of the word are as below :")
+        console.log("The Synonym/Synonyms of the word are as below : \n")
         synonyms[0].words.forEach(function (synonym) {
-            console.log(synonymCount + ':' + synonym);
+            console.log(synonymCount + ' -> ' + synonym + '\n');
             synonymCount++;
         })
     });
 
 }
 
+
+//Function to get the examples of a particular word
+const examplesOfTheWord = (word) => {
+    var options = {
+        method: 'GET',
+        url: 'https://fourtytwowords.herokuapp.com/word/' + word + '/examples',
+        qs: { api_key: apiKey },
+        headers:
+        {
+            'Postman-Token': 'e743cbc4-f39a-e307-e91a-c62b650f7432',
+            'Cache-Control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        let examples = JSON.parse(body);
+        let examplesCount = 1;
+
+        console.log("The examples of the word are as below : \n")
+        examples.examples.forEach(function (example) {
+            console.log(examplesCount + ' -> ' + example.text + '\n');
+            examplesCount++;
+        })
+    });
+
+}
 program.parse(process.argv);
 
 
