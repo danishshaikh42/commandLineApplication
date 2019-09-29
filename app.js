@@ -37,6 +37,13 @@ program
         wordOfTheDay();
     });
 
+program
+    .command('wordFullDetails <word>')
+    .description('Shows the Details of a particular word')
+    .action((word) => {
+        wordFullDetails(word);
+    });
+
 
 
 //Function to get the definitions of the particular word
@@ -153,14 +160,29 @@ const wordOfTheDay = () => {
         definitionsOfTheWord(wordOfTheDay)
             .then(() => {
                 synonymsOfTheWord(wordOfTheDay);
-            }).then(()=>{
+            }).then(() => {
                 examplesOfTheWord(wordOfTheDay);
-            }).catch((error)=>{
+            }).catch((error) => {
                 console.log(error);
             })
     });
 
 }
+
+
+
+//Function to display of a particular word, It's definitions, examples and synonymns
+const wordFullDetails = (word) => {
+    definitionsOfTheWord(word)
+        .then(() => {
+            synonymsOfTheWord(word);
+        }).then(() => {
+            examplesOfTheWord(word);
+        }).catch((error) => {
+            console.log(error);
+        })
+}
+
 
 program.parse(process.argv);
 
