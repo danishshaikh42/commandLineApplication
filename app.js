@@ -30,6 +30,15 @@ program
     });
 
 
+program
+    .command('word of the day')
+    .description('Shows the Details of a random word')
+    .action(() => {
+        wordOfTheDay();
+    });
+
+
+
 //Function to get the definitions of the particular word
 const definitionsOfTheWord = (word) => {
     var options = {
@@ -42,17 +51,22 @@ const definitionsOfTheWord = (word) => {
             'Cache-Control': 'no-cache'
         }
     };
+    return new Promise(function (resolve, reject) {
 
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        let results = JSON.parse(body);
-        let definitionCount = 1;
-        console.log("The Definition/Definitions of the word are as below : \n")
-        results.forEach(function (definition) {
-            console.log(definitionCount + ' -> ' + definition.text + '\n')
-            definitionCount++;
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            let results = JSON.parse(body);
+            let definitionCount = 1;
+            console.log("The Definition/Definitions of the word are as below : \n")
+            console.log("=====================================================");
+
+            results.forEach(function (definition) {
+                console.log(definitionCount + ' -> ' + definition.text + '\n');
+                definitionCount++;
+            });
+            resolve();
         });
-    });
+    })
 
 }
 
@@ -69,19 +83,22 @@ const synonymsOfTheWord = (word) => {
             'Cache-Control': 'no-cache'
         }
     };
+    return new Promise(function (resolve, reject) {
 
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        let synonyms = JSON.parse(body);
-        let synonymCount = 1;
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            let synonyms = JSON.parse(body);
+            let synonymCount = 1;
 
-        console.log("The Synonym/Synonyms of the word are as below : \n")
-        synonyms[0].words.forEach(function (synonym) {
-            console.log(synonymCount + ' -> ' + synonym + '\n');
-            synonymCount++;
-        })
-    });
-
+            console.log("The Synonym/Synonyms of the word are as below : \n");
+            console.log("================================================")
+            synonyms[0].words.forEach(function (synonym) {
+                console.log(synonymCount + ' -> ' + synonym + '\n');
+                synonymCount++;
+            })
+            resolve();
+        });
+    })
 }
 
 
@@ -103,7 +120,9 @@ const examplesOfTheWord = (word) => {
         let examples = JSON.parse(body);
         let examplesCount = 1;
 
-        console.log("The examples of the word are as below : \n")
+        console.log("The examples of the word are as below : \n");
+        console.log("===========================================");
+
         examples.examples.forEach(function (example) {
             console.log(examplesCount + ' -> ' + example.text + '\n');
             examplesCount++;
@@ -111,6 +130,38 @@ const examplesOfTheWord = (word) => {
     });
 
 }
+
+
+//Function to display Word of the Day, It's definitions, examples and synonymns
+const wordOfTheDay = () => {
+    var options = {
+        method: 'GET',
+        url: 'https://fourtytwowords.herokuapp.com/words/randomWord',
+        qs: { api_key: apiKey },
+        headers:
+        {
+            'Postman-Token': '12b6c700-c156-4e11-2602-fb8c84cffd9a',
+            'Cache-Control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        let wordOfTheDayJson = JSON.parse(body);
+        var wordOfTheDay = wordOfTheDayJson.word
+        console.log("Word of the Day -> " + wordOfTheDay + "\n");
+        definitionsOfTheWord(wordOfTheDay)
+            .then(() => {
+                synonymsOfTheWord(wordOfTheDay);
+            }).then(()=>{
+                examplesOfTheWord(wordOfTheDay);
+            }).catch((error)=>{
+                console.log(error);
+            })
+    });
+
+}
+
 program.parse(process.argv);
 
 
