@@ -3,8 +3,8 @@ const apiKey = "f8f2ecde9684d05a5883eb8a4b6873763aa616a193f26429b579e3bcf490827a
 const request = require("request");
 
 program
-    .version('0.0.1')
-    .description('Command Line Dictionary Tool');
+    .version('0.0.1') //Defines the version of the application
+    .description('Command Line Dictionary Tool'); // Defines what the app is about
 
 program
     .command('definitions <word>')
@@ -17,14 +17,14 @@ program
 
 program
     .command('synonymns <word>')
-    .description('Shows the synonymns of a word')
+    .description('Shows the Synonymns of a word')
     .action((word) => {
         synonymsOfTheWord(word);
     });
 
 program
     .command('examples <word>')
-    .description('Shows the examples of a word')
+    .description('Shows the Examples of a word')
     .action((word) => {
         examplesOfTheWord(word);
     });
